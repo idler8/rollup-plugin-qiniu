@@ -1,0 +1,35 @@
+{
+	"name": "rollup-plugin-qiniu",
+	"version": "1.0.1",
+	"description": "打包时将静态资源上传到七牛",
+	"homepage": "https://github.com/idler8/rollup-plugin-qiniu",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/idler8/rollup-plugin-qiniu"
+	},
+	"keywords": [
+		"rollup",
+		"rollup-plugin",
+		"es2015",
+		"npm",
+		"modules"
+	],
+	"author": "潘丽敏",
+	"scripts": {
+		"build": "rollup -c"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"qiniu": "^7.2.2",
+		"archiver": "^3.0.0"
+	},
+	"main": "dist/rollup-plugin-qiniu.cjs.js",
+	"module": "dist/rollup-plugin-qiniu.es.js",
+	"devDependencies": {
+		"rollup": "^1.20.3",
+		"rollup-plugin-babel": "^4.3.3",
+		"rollup-plugin-commonjs": "^10.1.0",
+		"rollup-plugin-json": "^4.0.0",
+		"rollup-plugin-terser": "^5.1.1"
+	}
+}
