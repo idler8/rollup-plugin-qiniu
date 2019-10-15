@@ -64,7 +64,14 @@ export default {
 qiniu({
   token: 'xxxxxx',
   targets: [
-    { src: 'resource/remote/**.jpg', dest: 'prefix/zip/', zip: 'remote.zip' },
+    { root:'resource/remote/',src: '**.jpg', dest: 'prefix/zip/remote.zip', zip:true },
+    { 
+      src: 'resource/remote/**.jpg', 
+      dest: 'prefix/zip/remote2.zip', 
+      zip(zip){
+        zip.append(JSON.stringify({value:'补充文件'}), { name: 'option.json' });
+      } 
+    },
     { src: 'resource/remote/**.png', dest: 'prefix/files/', zip: false },
   ],
 }),
@@ -87,9 +94,14 @@ qiniu({
 
 结果:
 ```
-压缩resource/remote/dir1/2.jpg到remote.zip包的resource/remote/dir1/2.jpg下
-压缩resource/remote/dir2/1.jpg到remote.zip包的resource/remote/dir2/1.jpg下
+压缩resource/remote/dir1/2.jpg到remote.zip包的dir1/2.jpg位置
+压缩resource/remote/dir2/1.jpg到remote.zip包的dir2/1.jpg位置
 从remote.zip上传到{七牛url}/prefix/zip/remote.zip
+
+压缩resource/remote/dir1/2.jpg到remote.zip包的resource/remote/dir1/2.jpg位置
+压缩resource/remote/dir2/1.jpg到remote.zip包的resource/remote/dir2/1.jpg位置
+增加文件option.json到remote.zip包的remote.zip位置
+从remote.zip上传到{七牛url}/prefix/zip/remote2.zip
 
 从resource/remote/dir1/1.png上传到{七牛url}/prefix/files/resource/remote/dir1/1.png
 从resource/remote/dir2/2.png上传到{七牛url}/prefix/files/resource/remote/dir2/2.png

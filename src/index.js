@@ -39,11 +39,10 @@ function qiniuUpload(token, dest, file) {
 		});
 	});
 }
-function zipTarget(paths) {
+function zipTarget(paths, callback, dir = '') {
 	let zipfile = archiver('zip', { zlib: { store: true } });
-	// var output = fs.createWriteStream(__dirname + '/example.zip');
-	paths.forEach(src => zipfile.file(src));
-	// zipfile.pipe(output);
+	paths.forEach(src => zipfile.file(dir + src, { name: src }));
+	callback && callback(zipfile);
 	if (!zipfile.close) {
 		zipfile.close = function() {
 			zipfile.destroy();
@@ -60,10 +59,10 @@ export default function qiniu(options = {}) {
 		name: 'qiniu',
 
 		[hook]() {
-			let promises = targets.map(({ src, dest, zip }) => {
-				return globby(src).then(paths => {
+			let promises = targets.map(({ root, src, dest, zip }) => {
+				return globby(src, { cwd: root || promises.cwd() }).then(paths => {
 					if (zip) {
-						return zipTarget(paths).then(stream => qiniuStream(token, dest + zip, stream));
+						return zipTarget(paths, typeof zip == 'function' ? zip : null, root || '').then(stream => qiniuStream(token, dest, stream));
 					} else {
 						return Promise.all(paths.map(file => qiniuUpload(token, dest + file, path.resolve(file))));
 					}
