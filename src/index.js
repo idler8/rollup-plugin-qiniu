@@ -60,7 +60,7 @@ export default function qiniu(options = {}) {
 
 		[hook]() {
 			let promises = targets.map(({ root, src, dest, zip }) => {
-				return globby(src, { cwd: root || promises.cwd() }).then(paths => {
+				return globby(src, { cwd: root || process.cwd() }).then(paths => {
 					if (zip) {
 						return zipTarget(paths, typeof zip == 'function' ? zip : null, root || '').then(stream => qiniuStream(token, dest, stream));
 					} else {
