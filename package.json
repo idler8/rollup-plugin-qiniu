@@ -1,6 +1,6 @@
 {
 	"name": "rollup-plugin-qiniu",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "打包时将静态资源上传到七牛",
 	"homepage": "https://github.com/idler8/rollup-plugin-qiniu",
 	"repository": {
@@ -20,8 +20,9 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"qiniu": "^7.2.2",
-		"archiver": "^3.0.0"
+		"archiver": "^3.0.0",
+		"fs-extra": "^8.1.0",
+		"qiniu": "^7.2.2"
 	},
 	"main": "dist/rollup-plugin-qiniu.cjs.js",
 	"module": "dist/rollup-plugin-qiniu.es.js",
