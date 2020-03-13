@@ -59,7 +59,7 @@ function zipTarget(paths, callback, dir = '') {
 }
 
 export default function qiniu(options = {}) {
-	let { token, targets, hook = 'buildEnd', debug = true } = options;
+	let { token, targets, hook = 'buildEnd', globalZip = null, debug = true } = options;
 	if (typeof token == 'function') token = token(getToken);
 
 	return {
@@ -68,17 +68,15 @@ export default function qiniu(options = {}) {
 		[hook]() {
 			let promises = targets.map(({ root, src, dest, zip }) => {
 				return globby(src, { cwd: root || process.cwd() }).then(paths => {
-					if (zip) {
-						return zipTarget(paths, typeof zip == 'function' ? zip : null, root || '').then(file => {
-							return qiniuUpload(token, dest, file).then(ret => {
-								if (debug && ret.hash) console.log('七牛上传成功：KEY=' + dest + ',HASH=' + ret.hash);
-								if (debug && ret.error) console.log('七牛上传失败：KEY=' + dest + ',Error=' + ret.error);
-								return fs.remove(file);
-							});
+					let zipFunc = zip === true ? globalZip : zip;
+					if (!zipFunc) return Promise.all(paths.map(file => qiniuUpload(token, dest + file, path.resolve(file))));
+					return zipTarget(paths, zipFunc, root || '').then(file => {
+						return qiniuUpload(token, dest, file).then(ret => {
+							if (debug && ret.hash) console.log('七牛上传成功：KEY=' + dest + ',HASH=' + ret.hash);
+							if (debug && ret.error) console.log('七牛上传失败：KEY=' + dest + ',Error=' + ret.error);
+							return fs.remove(file);
 						});
-					} else {
-						return Promise.all(paths.map(file => qiniuUpload(token, dest + file, path.resolve(file))));
-					}
+					});
 				});
 			});
 			return Promise.all(promises);
