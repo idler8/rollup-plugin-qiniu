@@ -59,7 +59,7 @@ function qiniu(options = {}) {
 			let promises = targets.map(({ root, src, dest, zip }) => {
 				return globby(src, { cwd: root || process.cwd() }).then(paths => {
 					let zipFunc = zip === true ? globalZip : zip;
-					if (!zipFunc) return Promise.all(paths.map(file => qiniuUpload(token, dest + file, path.resolve(file))));
+					if (!zipFunc) return Promise.all(paths.map(file => qiniuUpload(token, dest + file, path.resolve((root || '') + file))));
 					return zipTarget(paths, zipFunc, root || '').then(file => {
 						return qiniuUpload(token, dest, file).then(ret => {
 							if (debug && ret.hash) console.log('七牛上传成功：KEY=' + dest + ',HASH=' + ret.hash);
